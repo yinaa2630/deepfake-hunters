@@ -1,0 +1,25 @@
+name: deepfakehunters
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pip
+  - pip:
+      - fastapi
+      - uvicorn
+      - opencv-python
+      - numpy==1.23
+      - torch
+      - torchvision==0.15.2
+      - torchaudio
+      - python-multipart
+      - sqlalchemy
+      - pymysql
+      - cryptography
+      - python-dotenv
+      - basicsr
+      - realesrgan
+      - fpdf
+      - langchain_openai
+      - facenet-pytorch

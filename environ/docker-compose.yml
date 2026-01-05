@@ -1,0 +1,25 @@
+version: "3"
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: deepfake_db
+    restart: unless-stopped
+    volumes:
+      - ./output/Mysql:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      - MYSQL_DATABASE=deepfake_db
+      - MYSQL_ROOT_PASSWORD=1234
+    ports:
+      - 3306:3306
+# 기존 코드
+# docker run --name deepfake_db \
+#   -e MYSQL_ROOT_PASSWORD=1234 \
+#   -e MYSQL_DATABASE=deepfake_db \
+#   -p 3306:3306 \
+#   -d mysql:8.0
+
+# 접속 명령어
+# docker exec -it deepfake_db mysql -u root -p
+# 1234

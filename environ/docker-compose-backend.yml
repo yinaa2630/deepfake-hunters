@@ -1,0 +1,21 @@
+services:
+  backend:
+    build:
+      context: .. # 프로젝트 루트 (environment.yml이 있는 위치)
+      dockerfile: ./environ/Dockerfile # Dockerfile 경로 조정
+    container_name: deepfakehunters-backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000" # FastAPI 접근 포트
+    volumes:
+      - ./output/data:/app/data # 복원된 이미지 등 저장용
+      - ./output/logs:/app/logs # (선택) 로그 디렉토리 마운트
+      - ../backend:/app/backend
+      - ../ai:/app/ai
+    environment:
+      - PYTHONUNBUFFERED=1 # 로그 실시간 출력
+    working_dir: /app
+    # command: tail -f /dev/null
+    command: /opt/conda/envs/deepfakehunters/bin/python ./backend/main.py
+# docker-compose -f env/docker-compose-backend.yml up -d
+# docker exec -it deepfakehunters-backend bash

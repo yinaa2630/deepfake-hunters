@@ -1,0 +1,70 @@
+/* 전체 페이지 여백 및 배경 초기화 */
+html,
+#root,
+body {
+  height: 100%;
+  width: 100%;
+  margin: 0px;
+  background-color: black;
+  box-sizing: border-box; /* ★ 높이 계산 안정화 */
+  display: flex;
+  flex-direction: column;
+}
+header {
+  display: flex;
+  background-color: #eeeeee;
+}
+
+footer {
+  font-size: 1.2rem;
+  text-align: center;
+  color: #999;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 10px 0; /* ✅ 안쪽 여백 추가 (margin 대신 padding이 더 적절) */
+}
+
+main {
+  flex: 1;
+  display: flex;
+  overflow-x: hidden; /* 휠 생성(auto)/생략(hidden) 등 가능 */
+  padding: 0px 200px 0px 200px;
+}
+h1 {
+  font-size: 3.8rem;
+  font-weight: 9000;
+  color: #fff;
+  margin: 0px;
+}
+
+p {
+  font-size: 1.2rem;
+  font-weight: 300;
+  color: #e5e5e5;
+  line-height: 1.6;
+}
+button {
+  border: none;
+  border-radius: 6px;
+  padding: 7px 15px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+/* 휠 꾸미는 용도 */
+main::-webkit-scrollbar {
+  width: 10px; /* 스크롤바 너비 */
+}
+
+main::-webkit-scrollbar-track {
+  background: transparent; /* 트랙 배경 투명 */
+}
+
+main::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #888, #444); /* 스크롤바 색 */
+  border-radius: 10px; /* 둥글게 */
+  transition: background 0.3s ease;
+}
+
+main::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #aaa, #555); /* 호버 시 밝게 */
+}

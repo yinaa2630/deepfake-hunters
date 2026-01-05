@@ -1,0 +1,161 @@
+.flex-between {
+  display: flex;
+  align-items: center; /* 요소 세로 가운데 정렬 */
+  justify-content: space-between; /* 요소 가로 양쪽 정렬 */
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+}
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.gap-5 {
+  gap: 5px;
+}
+
+.gap-40 {
+  gap: 40px;
+}
+
+.gap-50 {
+  gap: 50px;
+}
+
+.gap-80 {
+  gap: 80px;
+}
+
+.container {
+  width: 100%;
+  display: flex;
+  margin-top: 50px;
+}
+.white {
+  color: #fff;
+}
+.blue {
+  color: #3b82f6;
+}
+
+.red {
+  color: #ef4444;
+}
+
+.yellow {
+  color: rgb(236, 236, 85);
+}
+
+.highlight {
+  font-weight: 700;
+}
+
+.text-shadow {
+  text-shadow: 0 0 8px rgba(72, 121, 218, 0.6), 2px 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+/* 페이드 인/아웃 공통 */
+.fade-in {
+  opacity: 1;
+}
+.fade-out {
+  opacity: 0;
+}
+
+/*  루프 리셋 시 즉시 전환 */
+.reset {
+  transition: none;
+  opacity: 0;
+}
+
+/* Detect, Restore title */
+.title {
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: #fff;
+  text-align: center;
+  margin-bottom: 30px;
+}
+.grid-container {
+  display: grid;
+  margin: 0px;
+  grid-template-columns: 1fr 0.2fr 1fr;
+  grid-template-rows: repeat(3, auto);
+  gap: 20px;
+  color: white;
+  justify-items: center; /* 가로 방향 가운데 정렬 */
+}
+
+/* =========================================
+   [5] 섹션 제목
+========================================= */
+.grid-container h3 {
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0px;
+}
+
+/* detect restore image box */
+.content-area {
+  width: 500px;
+  height: 400px;
+  aspect-ratio: 5 / 4; /* 비율 강제 */
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  background-color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border-radius: 8px;
+  overflow: hidden; /* ✅ 이미지가 영역 밖으로 안 넘침 */
+  transition: border-color 0.3s ease;
+}
+
+.restore .content-area:hover {
+  border-color: #2563eb;
+}
+.arrow-box img {
+  width: 90px;
+  height: auto;
+  opacity: 0.8;
+}
+.checkbox-text {
+  display: flex;
+  cursor: pointer;
+  line-height: 0.5;
+}
+
+.checkbox-text p {
+  margin: 0;
+  padding: 0;
+}
+
+.preview {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* 비율 유지하면서 영역 안에 꽉 맞춤 */
+  border-radius: 8px;
+  display: block;
+  image-rendering: pixelated; /* 확대 시 블러 방지 */
+  transition: transform 0.3s ease;
+}
+
+.preview:hover {
+  transform: scale(1.02); /* ✅ 살짝 확대 효과 */
+}

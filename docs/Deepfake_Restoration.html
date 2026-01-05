@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>딥페이크와 복원 기술 - 기술 분석 및 사례</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            overflow: hidden;
+        }
+
+        .presentation-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .slide {
+            width: 960px;
+            height: 540px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            display: none;
+            flex-direction: column;
+            position: absolute;
+            overflow: hidden;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-out;
+        }
+
+        .slide.active {
+            display: flex;
+            opacity: 1;
+            visibility: visible;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .slide-header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 20px 40px;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .slide-content {
+            flex: 1;
+            padding: 35px;
+            overflow-y: auto;
+        }
+
+        .title-slide {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: white;
+            text-align: center;
+        }
+
+        .title-slide h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .title-slide .subtitle {
+            font-size: 22px;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+
+        .title-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .content-box {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .content-box h3 {
+            color: #1e3c72;
+            font-size: 20px;
+            margin-bottom: 12px;
+            border-bottom: 3px solid #2a5298;
+            padding-bottom: 8px;
+        }
+
+        .content-box ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .content-box li {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .content-box li:before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #2a5298;
+            font-weight: bold;
+        }
+
+        .icon-large {
+            font-size: 60px;
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        .tech-detail-box {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 18px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+
+        .tech-detail-box h4 {
+            color: #1e3c72;
+            font-size: 18px;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .tech-detail-box p {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .comparison-table {
+            width: 100%;
+            margin-top: 15px;
+            border-collapse: collapse;
+        }
+
+        .comparison-table th {
+            background: linear-gradient(90deg, #1e3c72, #2a5298);
+            color: white;
+            padding: 10px;
+            font-size: 15px;
+        }
+
+        .comparison-table td {
+            background: #f5f7fa;
+            padding: 8px;
+            font-size: 13px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        .app-showcase {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .app-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 18px;
+            border-radius: 12px;
+            text-align: center;
+            min-height: 180px;
+        }
+
+        .app-card h4 {
+            color: #1e3c72;
+            font-size: 17px;
+            margin-bottom: 8px;
+        }
+
+        .app-card p {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.4;
+            margin-bottom: 8px;
+        }
+
+        .app-card a {
+            font-size: 11px;
+            color: #2a5298;
+            text-decoration: none;
+            word-break: break-all;
+        }
+
+        .app-icon {
+            font-size: 40px;
+            margin-bottom: 8px;
+        }
+
+        .model-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .model-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .model-name {
+            font-size: 19px;
+            font-weight: bold;
+            color: #1e3c72;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .model-features {
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .navigation {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+        }
+
+        .nav-button {
+            background: white;
+            color: #1e3c72;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+        }
+
+        .nav-button:hover {
+            background: #2a5298;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .slide-counter {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            color: white;
+            font-size: 16px;
+            opacity: 0.8;
+        }
+
+        .architecture-diagram {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+            margin-top: 15px;
+        }
+
+        .arch-step {
+            background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 20px;
+            font-size: 15px;
+            font-weight: bold;
+            width: 85%;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .arch-step:not(:last-child):after {
+            content: "↓";
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 20px;
+            color: #2a5298;
+        }
+
+        .loss-formula {
+            background: #f5f7fa;
+            padding: 12px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: #333;
+            text-align: center;
+            margin: 12px 0;
+            border-left: 4px solid #2a5298;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .metric-card h4 {
+            color: #1e3c72;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .metric-card p {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .trend-box {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+        }
+
+        .trend-box h4 {
+            color: #1e3c72;
+            font-size: 17px;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .trend-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .trend-box li {
+            padding: 5px 0 5px 20px;
+            position: relative;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .trend-box li:before {
+            content: "•";
+            position: absolute;
+            left: 5px;
+            color: #2a5298;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <!-- Slide 1: Title -->
+        <div class="slide active title-slide">
+            <div class="title-icon">🔬</div>
+            <h1>딥페이크와 복원 기술</h1>
+            <div class="subtitle">개념, 기술 동향 및 실무 적용</div>
+            <div class="slide-counter">1 / 20</div>
+        </div>
+
+        <!-- Slide 2: 딥페이크 정의 -->
+        <div class="slide">
+            <div class="slide-header">딥페이크(Deepfake) - 정의</div>
+            <div class="slide-content">
+                <div class="icon-large">🎭</div>
+                <div class="tech-detail-box">
+                    <h4>📌 정의</h4>
+                    <p>딥러닝을 이용해 사람 얼굴·목소리·행동 등을 합성하거나 변형해 실제와 거의 구분이 안 되게 만드는 기술군</p>
+                </div>
+                <div class="content-grid">
+                    <div class="content-box">
+                        <h3>주요 유형</h3>
+                        <ul>
+                            <li>Face Swap (얼굴 교체)</li>
+                            <li>Face Reenactment (표정 전이)</li>
+                            <li>Lip-sync (음성 동기화)</li>
+                            <li>Full-body Pose Transfer</li>
+                            <li>Talking-head Synthesis</li>
+                        </ul>
+                    </div>
+                    <div class="content-box">
+                        <h3>핵심 기술</h3>
+                        <ul>
+                            <li>Autoencoder 기반</li>
+                            <li>GAN (생성적 적대 신경망)</li>
+                            <li>Neural Rendering / 3DMM</li>
+                            <li>Keypoint/Flow 기반</li>
+                            <li>Diffusion Models</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-counter">2 / 20</div>
+        </div>
+
+        <!-- Slide 3: 딥페이크 생성 파이프라인 -->
+        <div class="slide">
+            <div class="slide-header">딥페이크 생성 파이프라인 (실무)</div>
+            <div class="slide-content">
+                <div class="architecture-diagram">
+                    <div class="arch-step">1. 데이터 수집 - 고품질 얼굴 이미지/영상</div>
+                    <div class="arch-step">2. 얼굴 검출·정렬 - MTCNN/RetinaFace</div>
+                    <div class="arch-step">3. 데이터 정제 - 중복 제거, 프레임 샘플링</div>
+                    <div class="arch-step">4. 모델 학습 - 적절한 아키텍처 + 손실설계</div>
+                    <div class="arch-step">5. 후처리 - 경계 블렌딩, 색상 정합</div>
+                    <div class="arch-step">6. 평가/튜닝 - 시각적 품질, 정량지표</div>
+                </div>
+            </div>
+            <div class="slide-counter">3 / 20</div>
+        </div>
+
+        <!-- Slide 4: 딥페이크 탐지 접근법 -->
+        <div class="slide">
+            <div class="slide-header">딥페이크 탐지(Detection) 접근법</div>
+            <div class="slide-content">
+                <div class="icon-large">🔍</div>
+                <div class="content-grid">
+                    <div class="content-box">
+                        <h3>탐지 방법론</h3>
+                        <ul>
+                            <li>CNN 기반 프레임 분류</li>
+                            <li>주파수 영역 분석</li>
+                            <li>생체 신호 기반 탐지</li>
+                            <li>시공간 일관성 분석</li>
+                            <li>Ensemble/Multi-modal</li>
+                        </ul>
+                    </div>
+                    <div class="content-box">
+                        <h3>주요 모델</h3>
+                        <ul>
+                            <li>EfficientNet (경량화)</li>
+                            <li>Xception (고성능)</li>
+                            <li>ResNet (잔차 학습)</li>
+                            <li>Grad-CAM (설명가능성)</li>
+                            <li>Transfer Learning</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-counter">4 / 20</div>
+        </div>
+
+        <!-- Slide 5: 딥페이크 탐지 웹 애플리케이션 -->
+        <div class="slide">
+            <div class="slide-header">딥페이크 탐지 - 웹 애플리케이션 사례</div>
+            <div class="slide-content">
+                <div class="app-showcase">
+                    <div class="app-card">
+                        <div class="app-icon">🔍</div>
+                        <h4>Deepware Scanner</h4>
+                        <p>동영상 딥페이크 탐지 전문<br>무료 웹 기반 스캐너<br>신뢰도 점수 제공</p>
+                        <a href="https://deepware.ai" target="_blank">deepware.ai</a>
+                    </div>
+                    <div class="app-card">
+                        <div class="app-icon">🛡️</div>
+                        <h4>Sensity</h4>
+                        <p>AI 생성 미디어 탐지<br>기업용 솔루션<br>실시간 모니터링</p>
+                        <a href="https://sensity.ai" target="_blank">sensity.ai</a>
+                    </div>
+                    <div class="app-card">
+                        <div class="app-icon">🎯</div>
+                        <h4>Intel FakeCatcher</h4>
+                        <p>혈류 기반 탐지 기술<br>96% 정확도<br>실시간 분석</p>
+                        <a href="https://www.intel.com/fakecatcher" target="_blank">intel.com/fakecatcher</a>
+                    </div>
+                </div>
+                <div style="margin-top: 20px; padding: 15px; background: #f5f7fa; border-radius: 8px; text-align: center;">
+                    <strong style="color: #1e3c72;">특징:</strong> 대부분 기업용이며, 무료 버전은 제한적. API 제공 서비스 증가 추세
+                </div>
+            </div>
+            <div class="slide-counter">5 / 20</div>
+        </div>
+
+        <!-- Slide 6: 사진 복원 정의 -->
+        <div class="slide">
+            <div class="slide-header">사진 복원(Restoration) - 정의</div>
+            <div class="slide-content">
+                <div class="icon-large">✨</div>
+                <div class="tech-detail-box">
+                    <h4>📌 정의</h4>
+                    <p>손상(스크래치, 노이즈, 저해상도, 색 바램 등)된 사진을 원래 상태에 가깝게 복구하거나 품질을 향상하는 작업</p>
+                </div>
+                <div class="content-grid">
+                    <div class="content-box">
+                        <h3>문제 유형</h3>
+                        <ul>
+                            <li>노이즈 제거 (Denoising)</li>
+                            <li>블러 제거 (Deblurring)</li>
+                            <li>이미지 인페인팅</li>
+                            <li>슈퍼해상도 (SR)</li>
+                            <li>흑백→컬러 변환</li>
+                        </ul>
+                    </div>
+                    <div class="content-box">
+                        <h3>핵심 모델</h3>
+                        <ul>
+                            <li>U-Net (Skip Connections)</li>
+                            <li>SRGAN (텍스처 생성)</li>
+                            <li>VAE / VQ-VAE</li>
+                            <li>Diffusion 기반 복원</li>
+                            <li>Perceptual Loss</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-counter">6 / 20</div>
+        </div>
+
+        <!-- Slide 7: 복원 손실 함수 -->
+        <div class="slide">
+            <div class="slide-header">복원 모델 - 손실 함수 조합 (실무)</div>
+            <div class="slide-content">
+                <div class="icon-large">📐</div>
+                <div class="tech-detail-box">
+                    <h4>손실 함수 설계</h4>
+                    <p>복원 품질을 높이기 위해 여러 손실 함수를 조합하여 사용</p>
+                </div>
+                <div class="loss-formula">
+                    Loss = α × L1 + β × Perceptual + γ × Adversarial + δ × (1 - SSIM)
+                </div>
+                <div class="model-grid">
+                    <div class="content-box">
+                        <h3>기본 손실</h3>
+                        <ul>
+                            <li>L1 / L2 Loss: 픽셀 단위 차이</li>
+                            <li>간단하지만 흐릿한 결과</li>
+                        </ul>
+                    </div>
+                    <div class="content-box">
+                        <h3>고급 손실</h3>
+                        <ul>
+                            <li>Perceptual: VGG feature 거리</li>
+                            <li>Adversarial: GAN 기반</li>
+                            <li>SSIM: 구조적 유사성</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-counter">7 / 20</div>
+        </div>
+
+        <!-- Slide 8: 복원 평가 지표 -->
+        <div class="slide">
+            <div class="slide-header">복원 모델 - 평가 지표</div>
+            <div class="slide-content">
+                <div class="metric-grid">
+                    <div class="metric-card">
+                        <h4>PSNR</h4>
+                        <p>Peak Signal-to-Noise Ratio<br>픽셀 수준 복원 품질<br>높을수록 좋음</p>
+                    </div>
+                    <div class="metric-card">
+                        <h4>SSIM</h4>
+                        <p>Structural Similarity<br>사람 지각 유사성<br>0~1 사이 값</p>
+                    </div>
+                    <div class="metric-card">
+                        <h4>LPIPS</h4>
+                        <p>Learned Perceptual<br>인간 지각에 더 근접<br>낮을수록 좋음</p>
+                    </div>
+                </div>
+                <div class="tech-detail-box" style="margin-top: 20px;">
+                    <h4>⚠️ 중요 사항</h4>
+                    <p>정량 지표만으로는 불충분 → 최종 판단은 <strong>주관적 평가(사용자 설문, A/B 테스트)</strong>가 필수</p>
+                </div>
+            </div>
+            <div class="slide-counter">8 / 20</div>
+        </div>
+
+        <!-- Slide 9: 복원 웹 애플리케이션 -->
+        <div class="slide">
+            <div class="slide-header">사진 복원 - 웹 애플리케이션 사례</div>
+            <div class="slide-content">
+                <div class="app-showcase">
+                    <div class="app-card">
+                        <div class="app-icon">✨</div>
+                        <h4>MyHeritage</h4>
+                        <p>AI 얼굴 복원 전문<br>흑백→컬러 변환<br>애니메이션 기능</p>
+                        <a href="https://www.myheritage.com/photo-enhancer" target="_blank">myheritage.com/photo-enhancer</a>
+                    </div>
+                    <div class="app-card">
+                        <div class="app-icon">🖼️</div>
+                        <h4>Remini</h4>
+                        <p>모바일 앱 기반<br>저해상도 향상<br>얼굴 디테일 복원</p>
+                        <a href="https://remini.ai" target="_blank">remini.ai</a>
+                    </div>
+                    <div class="app-card">
+                        <div class="app-icon">🎨</div>
+                        <h4>VanceAI</h4>
+                        <p>다양한 복원 도구<br>일괄 처리 지원<br>API 제공</p>
+                        <a href="https://vanceai.com" target="_blank">vanceai.com</a>
+                    </div>
+                </div>
+                <div style="margin-top: 20px; padding: 15px; background: #f5f7fa; border-radius: 8px; text-align: center;">
+                    <strong style="color: #1e3c72;">특징:</strong> 대부분 프리미엄 구독 모델. 무료는 워터마크/해상도 제한
+                </div>
+            </div>
+            <div class="slide-counter">9 / 20</div>
+        </div>
+
+        <!-- Slide 10: 탐지 vs 복원 비교 -->
+        <div class="slide">
+            <div class="slide-header">딥페이크 탐지 vs 사진 복원 - 실무 차이점</div>
+            <div class="slide-content">
+                <table class="comparison-table">
+                    <tr>
+                        <th style="width: 20%;">구분</th>
+                        <th>딥페이크 탐지</th>
+                        <th>사진 복원</th>
+                    </tr>
+                    <tr>
+                        <td><strong>목표</strong></td>
+                        <td>합성·위조 여부 판별</td>
+                        <td>영상/이미지 품질 재생성</td>
+                    </tr>
+                    <tr>
+                        <td><strong>문제 유형</strong></td>
+                        <td>이진/다중 분류</td>
+                        <td>이미지 생성 문제</td>
+                    </tr>
+                    <tr>
+                        <td><strong>데이터 요구</strong></td>
+                        <td>Real vs Fake 레이블 필요</td>
+                        <td>손상↔원본 쌍(pair) 필요</td>
+                    </tr>
+                    <tr>
+                        <td><strong>평가</strong></td>
+                        <td>정확도, F1, ROC-AUC</td>
+                        <td>PSNR, SSIM, LPIPS</td>
+                    </tr>
+                    <tr>
+                        <td><strong>윤리·안전</strong></td>
+                        <td>오탐/미탐 가능 (완전하지 않음)</td>
+                        <td>저작권/초상권 고려 필요</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="slide-counter">10 / 20</div>
+        </div>
+
+        <!-- Slide 11: 최근 기술 동향 - 딥페이크 -->
+        <div class="slide">
+            <div class="slide-header">최근 기술 동향 - 딥페이크 생성</div>
+            <div class="slide-content">
+                <div class="icon-large">🚀</div>
+                <div class="trend-box">
+                    <h4>2024-2025 주요 트렌드</h4>
+                    <ul>
+                        <li>Diffusion 모델의 급부상 (Stable Diffusion, DALL-E 3 등)</li>
+                        <li>Text-to-Video 생성 기술 발전 (Runway Gen-2, Pika Labs)</li>
+                        <li>실시간 Face Swap 기술 (FaceSwap Live)</li>
+                        <li>3D 기반 Neural Rendering 고도화</li>
+                        <li>음성 복제 기술과의 통합 (Voice Cloning + Face)</li>
+                    </ul>
+                </div>
+                <div class="trend-box">
+                    <h4>기술적 발전</h4>
+                    <ul>
+                        <li>더 적은 데이터로 고품질 생성 (Few-shot Learning)</li>
+                        <li>실시간 처리 속도 향상 (GPU 최적화)</li>
+                        <li>다중 모달 통합 (비디오+오디오+텍스트)</li>
+                        <li>모바일 디바이스에서도 실행 가능</li>
+                        <li>API 기반 서비스 확산</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="slide-counter">11 / 20</div>
+        </div>
+
+        <!-- Slide 12: 최근 기술 동향 - 탐지 -->
+        <div class="slide">
+            <div class="slide-header">최근 기술 동향 - 딥페이크 탐지</div>
+            <div class="slide-content">
+                <div class="icon-large">🔍</div>
+                <div class="trend-box">
+                    <h4>2024-2025 탐지 기술 발전</h4>
+                    <ul>
+                        <li>생체 신호 기반 탐지 (혈류, 심박수 분석)</li>
+                        <li>주파수 도메인 분석 기법 고도화</li>
+                        <li>Transformer 기반 탐지 모델 (ViT, Swin Transformer)</li>
+                        <li>Cross-modal 일관성 검증 (영상-음성 동기화)</li>
+                        <li>설명가능한 AI (XAI) 적용 증가</li>
+                    </ul>
+                </div>
+                <div class="trend-box">
+                    <h4>도전 과제</h4>
+                    <ul>
+                        <li>생성 기술이 탐지 기술보다 빠르게 발전</li>
+                        <li>새로운 생성 모델에 대한 일반화 어려움</li>
+                        <li>실시간 탐지의 계산 비용</li>
+                        <li>압축된 소셜미디어 영상 분석의 한계</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="slide-counter">12 / 20</div>
+        </div>
+
+        <!-- Slide 13: 최근 기술 동향 - 복원 -->
+        <div class="slide">
+            <div class="slide-header">최근 기술 동향 - 사진 복원</div>
+            <div class="slide-content">
+                <div class="icon-large">✨</div>
+                <div class="trend-box">
+                    <h4>2024-2025 복원 기술 발전</h4>
+                    <ul>
+                        <li>Diffusion 기반 복원 (SR3, DDPM 계열)</li>
+                        <li>Transformer 기반 복원 (SwinIR, Restormer)</li>
+                        <li>Real-world 복원 (실제 노이즈 패턴 학습)</li>
+                        <li>Blind 복원 (손상 유형을 모르는 상태에서 복원)</li>
+                        <li>컬러라이제이션 정확도 향상</li>
+                    </ul>
+                </div>
+                <div class="trend-box">
+                    <h4>상용화 동향</h4>
+                    <ul>
+                        <li>클라우드 기반 대량 처리 서비스</li>
+                        <li>모바일 앱의 실시간 복원 기능</li>
+                        <li>가족사진 복원 서비스 인기</li>
+                        <li>영화/방송 분야 적용 확대</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="slide-counter">13 / 20</div>
+        </div>
+
+        <!-- Slide 14: 실무 권장 세팅 - 전처리 -->
+        <div class="slide">
+            <div class="slide-header">실무 권장 세팅 - 데이터 전처리</div>
+            <div class="slide-content">
+                <div class="architecture-diagram">
+                    <div class="arch-step">1. 얼굴 검출 - MTCNN/RetinaFace</div>
+                    <div class="arch-step">2. 정렬 및 크롭 - 256×256 RGB</div>
+                    <div class="arch-step">3. 정규화 - [0, 1] 또는 [-1, 1]</div>
+                    <div class="arch-step">4. 데이터 증강 - 회전, 채도, 블러</div>
+                    <div class="arch-step">5. 배치 구성 - 효율적인 학습</div>
+                </div>
+                <div style="margin-top: 20px; padding: 15px; background: #f5f7fa; border-radius: 8px;">
+                    <strong style="color: #1e3c72;">프레임워크:</strong> PyTorch 권장 (유연성·커뮤니티 지원)
+                </div>
+            </div>
+            <div class="slide-counter">14 / 20</div>
+        </div>
+
+        <!-- Slide 15: 실무 권장 - 탐지 모델 -->
+        <div class="slide">
+            <div class="slide-header">실무 권장 - 딥페이크 탐지 모델</div>
+            <div class="slide-content">
+                <div class="model-grid">
+                    <div class="model-card">
+                        <div class="model-name">초기 제안</div>
+                        <div class="model-features">
+                            <p><strong>모델:</strong> EfficientNet-B0</p>
+                            <p><strong>이유:</strong> 경량화 + 고성능</p>
+                            <p><strong>방법:</strong> Pretrained 사용</p>
+                            <p><strong>미세조정:</strong> 마지막 FC 교체</p>
+                            <p><strong>손실:</strong> Focal Loss / BCE</p>
+                        </div>
+                    </div>
+                    <div class="model-card">
+                        <div class="model-name">고급 옵션</div>
+                        <div class="model-features">
+                            <p><strong>모델:</strong> Xception</p>
+                            <p><strong>이유:</strong> FaceForensics++ 우수</p>
+                            <p><strong>앙상블:</strong> 여러 모델 결합</p>
+                            <p><strong>설명:</strong> Grad-CAM 적용</p>
+                            <p><strong>평가:</strong> F1, ROC-AUC</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-counter">15 / 20</div>
+        </div>
+
+        <!-- Slide 16: 실무 권장 - 복원 모델 -->
+        <div class="slide">
+            <div class="slide-header">실무 권장 - 사진 복원 모델</div>
+            <div class="slide-content">
+                <div class="model-grid">
+                    <div class="model-card">
+                        <div class="model-name">초기 제안</div>
+                        <div class="model-features">
+                            <p><strong>모델:</strong> U-Net</p>
+                            <p><strong>손실:</strong> L1 + Perceptual</p>
+                            <p><strong>장점:</strong> 안정적, 빠른 학습</p>
+                            <p><strong>평가:</strong> PSNR, SSIM</p>
+                            <p><strong>적용:</strong> 기본 복원 작업</p>
+                        </div>
+                    </div>
+                    <div class="model-card">
+                        <div class="model-name">고급 옵션</div>
+                        <div class="model-features">
+                            <p><strong>모델:</strong> SRGAN / Diffusion</p>
+                            <p><strong>장점:</strong> 사실적 텍스처</p>
+                            <p><strong>단점:</strong> 학습 불안정</p>
+                            <p><strong>권장:</strong> 필요시 도입</p>
+                            <p><strong>평가:</strong> LPIPS 추가</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-counter">16 / 20</div>
+        </div>
+
+        <!-- Slide 17: 배포 전략 -->
+        <div class="slide">
+            <div class="slide-header">배포 및 최적화 전략</div>
+            <div class="slide-content">
+                <div class="content-grid">
+                    <div class="content-box">
+                        <h3>모델 경량화</h3>
+                        <ul>
+                            <li>ONNX 변환</li>
+                            <li>TorchScript 사용</li>
+                            <li>양자화 (Quantization)</li>
+                            <li>프루닝 (Pruning)</li>
+                            <li>지식 증류 (Distillation)</li>
+                        </ul>
+                    </div>
+                    <div class="content-box">
+                        <h3>배포 환경</h3>
+                        <ul>
+                            <li>GPU: 시연용 (빠른 추론)</li>
+                            <li>CPU: 제한적 (속도 이슈)</li>
+                            <li>클라우드: AWS/GCP</li>
+                            <li>엣지: 모바일 최적화</li>
+                            <li>API: FastAPI/Flask</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-counter">17 / 20</div>
+        </div>
+
+        <!-- Slide 18: 평가 루틴 -->
+        <div class="slide">
+            <div class="slide-header">평가 및 모니터링 루틴</div>
+            <div class="slide-content">
+                <div class="tech-detail-box">
+                    <h4>학습 중 평가</h4>
+                    <p>매 epoch마다 validation set으로 성능 체크, 모델 체크포인트 유지</p>
+                </div>
+                <div class="content-grid">
+                    <div class="content-box">
+                        <h3>탐지 모델</h3>
+                        <ul>
+                            <li>정확도 (Accuracy)</li>
+                            <li>F1-Score</li>
+                            <li>ROC-AUC</li>
+                            <li>Confusion Matrix</li>
+                            <li>Grad-CAM 시각화</li>
+                        </ul>
+                    </div>
+                    <div class="content-box">
+                        <h3>복원 모델</h3>
+                        <ul>
+                            <li>PSNR (픽셀 품질)</li>
+                            <li>SSIM (구조 유사성)</li>
+                            <li>LPIPS (지각 거리)</li>
+                            <li>사용자 설문</li>
+                            <li>A/B 테스트</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-counter">18 / 20</div>
+        </div>
+
+        <!-- Slide 19: 윤리 및 법적 고려사항 -->
+        <div class="slide">
+            <div class="slide-header">윤리·보안·법적 고려사항</div>
+            <div class="slide-content">
+                <div class="icon-large">⚖️</div>
+                <div class="trend-box">
+                    <h4>🔒 보안 및 접근 통제</h4>
+                    <ul>
+                        <li>모델 악용 방지를 위한 접근 제한</li>
+                        <li>사용 로그 기록 및 모니터링</li>
+                        <li>API 인증 및 Rate Limiting</li>
+                        <li>사용 정책 및 약관 명시</li>
+                    </ul>
+                </div>
+                <div class="trend-box">
+                    <h4>⚠️ 윤리적 책임</h4>
+                    <ul>
+                        <li>합성 데이터 생성 시 명시적 동의 필요</li>
+                        <li>타인의 얼굴/음성 이용 시 법적 허가</li>
+                        <li>탐지 결과는 보조적 증거로만 제공</li>
+                        <li>법적 판단은 전문가 개입 권장</li>
+                        <li>복원 시 저작권/초상권 고려</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="slide-counter">19 / 20</div>
+        </div>
+
+        <!-- Slide 20: 결론 -->
+        <div class="slide title-slide">
+            <div class="title-icon">✅</div>
+            <h1>결론 및 요약</h1>
+            <div class="subtitle" style="font-size: 18px; line-height: 1.8;">
+                <p>✓ 딥페이크 생성과 탐지는 지속적인 경쟁 관계</p>
+                <p>✓ 복원 기술은 Diffusion/Transformer로 진화 중</p>
+                <p>✓ 실무 적용 시 윤리·법적 고려 필수</p>
+                <p>✓ 최종 판단은 항상 인간 전문가가 수행</p>
+                <p style="margin-top: 30px; font-size: 16px; opacity: 0.8;">
+                    📚 지속적인 학습과 업데이트가 필요한 분야
+                </p>
+            </div>
+            <div class="slide-counter">20 / 20</div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="navigation">
+            <button class="nav-button" onclick="previousSlide()">◀ 이전</button>
+            <button class="nav-button" onclick="nextSlide()">다음 ▶</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+        }
+
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+
+        function previousSlide() {
+            showSlide(currentSlide - 1);
+        }
+
+        // 키보드 네비게이션
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                nextSlide();
+            }
+            if (e.key === 'ArrowLeft') {
+                previousSlide();
+            }
+            if (e.key === 'Home') {
+                showSlide(0);
+            }
+            if (e.key === 'End') {
+                showSlide(totalSlides - 1);
+            }
+        });
+
+        // 터치 스와이프 지원 (모바일)
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            if (touchEndX < touchStartX - 50) {
+                nextSlide();
+            }
+            if (touchEndX > touchStartX + 50) {
+                previousSlide();
+            }
+        }
+    </script>
+</body>
+</html>

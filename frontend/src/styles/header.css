@@ -1,0 +1,65 @@
+.logo-container {
+  margin: 4px;
+  padding: 0px 50px 0px 100px;
+}
+.logo {
+  width: 120px;
+  height: auto;
+  border-radius: 3px;
+}
+
+.logo-container > span {
+  font-size: 2rem;
+  font-weight: 900;
+  color: black;
+  line-height: 1.2;
+  text-shadow: 0 0 8px rgba(72, 121, 218, 0.6), 2px 2px 6px rgba(0, 0, 0, 0.4);
+}
+/* [우] 메뉴 : 텍스트 */
+.navbar-menu {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-right: 40px; /* ★ 오른쪽 끝에 공간 확보 */
+  align-items: flex-start; /* ✅ 텍스트를 약간 위쪽 정렬 */
+  margin-top: -5px; /* ✅ 전체 메뉴를 약간 위로 이동 */
+}
+
+.nav-item.active {
+  font-size: 2rem;
+  font-weight: 900;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+.navbar-menu > a {
+  color: black;
+  text-decoration: none;
+  transition: color 0.2s ease, transform 0.2s ease;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 30px;
+}
+.navbar-menu > a:hover {
+  transform: scale(1.05);
+}
+
+/* ✅ [추가] 한글 설명 tooltip */
+.nav-tooltip {
+  position: absolute;
+  bottom: -20px;
+  font-size: 1.1rem;
+  font-weight: 400;
+
+  opacity: 0;
+  transform: translateY(-4px);
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+/* ✅ 마우스 오버 시 한글 설명 등장 */
+.navbar-menu > a:hover .nav-tooltip {
+  opacity: 1;
+  transform: translateY(0);
+  color: rgb(0, 0, 0);
+}

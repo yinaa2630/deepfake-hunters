@@ -1,0 +1,93 @@
+/* ✅ 마우스 오버 시 테두리 강조 */
+.detect .content-area:hover {
+  border-color: #f22525;
+}
+/* detect 안에 upload-box 버튼 */
+.detect button {
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: 600;
+  background-color: #f22525;
+}
+
+.detect button:hover {
+  background-color: #d71c1c;
+}
+
+/* upload box 안에 내용 */
+.detect-model-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.detect-model-box > p {
+  font-size: 1.3rem;
+  font-weight: 400;
+  text-align: left;
+  color: #eec2c2;
+  margin-bottom: 6px;
+}
+
+.detect-model-select {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #f5f5f5;
+  margin-bottom: 30px;
+}
+
+.detect-model-select label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+}
+
+/* result 관련 css */
+.detect-result-container {
+  width: 500px;
+  gap: 8px;
+}
+
+.detect .pdf-btn {
+  background-color: #16a34a;
+  box-shadow: 0 0 6px rgba(34, 197, 94, 0.3);
+}
+
+.detect .pdf-btn:hover {
+  background-color: #109641;
+  box-shadow: 0 0 10px rgba(22, 163, 74, 0.5);
+}
+
+/* 결과 창 */
+.result-summary-box {
+  flex: 1;
+  border: 2px solid #fff;
+  border-radius: 8px;
+  padding: 8px 14px;
+  height: 48px;
+  box-shadow: 0 0 8px black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+
+.result-summary-box > p {
+  font-weight: 600;
+  margin: 2px 0;
+}
+
+.result-summary-box .white {
+  font-size: 1.2rem;
+  font-weight: 400;
+}
+
+/* ✅ 분석 결과가 있을 때 — 빨간색 강조 */
+.result-summary-box.active {
+  border-color: #f22525;
+  box-shadow: 0 0 10px rgba(242, 37, 37, 0.6);
+}

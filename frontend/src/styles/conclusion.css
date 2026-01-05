@@ -1,0 +1,55 @@
+/* [2] 타이틀 */
+.conclusion-sub-title {
+  font-size: 2.7rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.conclusion-main-title {
+  font-size: 4.2rem;
+  font-weight: 1000;
+  margin-top: 5px;
+  margin-bottom: 20px;
+}
+
+/* [4] 이미지 기본 스타일 */
+.conclusion-image img {
+  border-radius: 8px;
+  margin-top: 20px;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
+  transition: all 0.8s ease-in-out;
+}
+
+/* ✅ 반전 이미지 플래시 효과 */
+.flash {
+  animation: flashEffect 1s ease-in-out;
+}
+
+@keyframes flashEffect {
+  0% {
+    opacity: 0.6;
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  20% {
+    opacity: 1;
+    transform: scale(1.1);
+    filter: brightness(2);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.05);
+    filter: brightness(1.4);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    filter: brightness(1);
+  }
+}
+
+/* ✅ 부드럽게 사라짐 */
+.fade-out {
+  opacity: 0;
+  transform: scale(1);
+  transition: opacity 1s ease-in-out;
+}

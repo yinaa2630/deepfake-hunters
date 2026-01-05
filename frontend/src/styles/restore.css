@@ -1,0 +1,15 @@
+/* ✅ 마우스 오버 시 테두리 강조 */
+.restore .content-area:hover {
+  border-color: #2563eb;
+}
+/* detect 안에 upload-box 버튼 */
+.restore button {
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: 600;
+  background-color: #2563eb;
+}
+
+.restore button:hover {
+  background-color: #1d4ed8;
+}

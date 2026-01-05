@@ -1,0 +1,104 @@
+/* [part1. 좌] 텍스트 영역 ] */
+.home-text {
+  flex: 0 1 auto;
+  max-width: 65%;
+}
+.home-main {
+  margin-top: 40px;
+}
+/* 섹션 : 1,2,3 통일 */
+.home-section {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  margin-bottom: 9px; /* 섹션간 세로폭 */
+}
+
+/* 섹션 : 아이콘(번호) */
+.section-number {
+  background-color: #f5f5f5;
+  color: black;
+  border-radius: 6px;
+  padding: 3px 10px;
+  font-size: 0.9rem;
+  font-weight: 1000;
+  margin-top: 8px;
+}
+
+/* 섹션 : 제목 */
+.section-title {
+  margin: 0 0 1dvb 0;
+  font-size: 1.7rem;
+  color: #fff;
+}
+
+.section-subtitle {
+  font-weight: 400;
+  font-size: 1.1rem;
+}
+
+.home-image {
+  flex: 0 1 auto;
+  /* flex-shrink: 0; */
+  position: relative;
+  width: 450px;
+  height: 450px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+  box-sizing: border-box;
+}
+
+/* 기존 이미지 스타일 (유지) */
+.home-image img {
+  width: 100%;
+  height: 100%;
+}
+
+/* 이미지 전환용 공통 클래스 */
+.home-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  object-fit: cover;
+  transition: opacity 1s ease-in-out; /* ✅ 부드러운 페이드 */
+  opacity: 0;
+}
+
+/* AI 이미지 경고 테두리 번쩍임 */
+.alert-border {
+  animation: red-flash 0.4s ease-in-out infinite alternate;
+  box-shadow: 0 0 25px rgba(255, 0, 0, 0.8);
+  border: 3px solid rgba(255, 0, 0, 0.9);
+}
+
+@keyframes red-flash {
+  0% {
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.2);
+    border-color: rgba(255, 0, 0, 0.3);
+  }
+  100% {
+    box-shadow: 0 0 30px rgba(255, 0, 0, 1);
+    border-color: rgba(255, 0, 0, 1);
+  }
+}
+
+/* 딥페이크 경고 표시 */
+.deepfake-warning {
+  position: absolute;
+  top: 50%; /* 수직 중앙 */
+  left: 50%; /* 수평 중앙 */
+  transform: translate(-50%, -50%); /* 정확히 중앙 정렬 */
+  /* color: #ff3b3b; 강렬한 빨강 */
+  color: red;
+  font-weight: 900;
+  font-size: 4.5rem; /* ✅ 기존보다 크고 눈에 띄게 */
+  text-align: center;
+  text-shadow: 0 0 20px rgba(40, 5, 5, 0.8); /* 번쩍 효과 */
+  transition: opacity 1s ease-in-out;
+  opacity: 0;
+  z-index: 5; /* 이미지 위에 표시되도록 */
+  background: none; /* ✅ 박스 제거 */
+  border: none; /* ✅ 테두리 제거 */
+  padding: 0; /* ✅ 여백 제거 */
+}
